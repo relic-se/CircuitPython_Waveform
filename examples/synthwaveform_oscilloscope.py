@@ -27,7 +27,7 @@ data = None
 
 current_type = 0
 current_index = 0
-values = [1.0, 0.0, 1.0]  # amplitude, phase, scale
+values = [1.0, 0.0, 1.0, 0.5]  # amplitude, phase, frequency, duty cycle/reverse
 
 
 def update():
@@ -35,7 +35,7 @@ def update():
         data = synthwaveform.sine(
             amplitude=values[0],
             phase=values[1],
-            scale=values[2],
+            frequency=values[2],
             size=WIDTH,
             dtype=np.float,
         )
@@ -43,7 +43,7 @@ def update():
         data = synthwaveform.triangle(
             amplitude=values[0],
             phase=values[1],
-            shape=values[2],
+            frequency=values[2],
             size=WIDTH,
             dtype=np.float,
         )
@@ -51,7 +51,8 @@ def update():
         data = synthwaveform.saw(
             amplitude=values[0],
             phase=values[1],
-            reverse=values[2] > 0.5,
+            frequency=values[2],
+            reverse=values[3] > 0.5,
             size=WIDTH,
             dtype=np.float,
         )
@@ -59,7 +60,8 @@ def update():
         data = synthwaveform.square(
             amplitude=values[0],
             phase=values[1],
-            duty_cycle=values[2],
+            frequency=values[2],
+            duty_cycle=values[3],
             size=WIDTH,
             dtype=np.float,
         )
