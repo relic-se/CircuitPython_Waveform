@@ -75,6 +75,35 @@ def _minmax(dtype: np._DType, amplitude: float = 1.0) -> tuple[int, int]:
     return minmax
 
 
+def _prepare(
+    data: np.ndarray | list, amplitude: float = 1.0, dtype: np._DType = None
+) -> np.ndarray:
+    # Determine data type and minimum/maximum range
+    if dtype is None:
+        dtype = data.dtype if type(data) is np.ndarray else _DEFAULT_DTYPE
+    minmax = _minmax(dtype)
+
+    # Convert list of floats to ndarray
+    if type(data) is list:
+        data = np.array(data, dtype=np.float)
+
+    # Amplify and clip
+    if data.dtype is np.float:
+        data = np.array(
+            [min(max(i, -1.0), 1.0) for i in data * amplitude],
+            dtype=np.float,
+        )
+
+    if dtype is not np.float:
+        # Scale to desired range
+        data = (data + 1) / 2 * (minmax[1] - minmax[0]) + minmax[0]
+        # Convert to integers
+        data = [int(i) for i in data]
+
+    # Convert to ndarray of desired type
+    return np.array(data, dtype=dtype)
+
+
 def sine(
     amplitude: float = 1.0,
     phase: float = 0.0,
@@ -82,11 +111,10 @@ def sine(
     size: int = _DEFAULT_SIZE,
     dtype: np._DType = _DEFAULT_DTYPE,
 ) -> np.ndarray:
-    minmax = _minmax(dtype, amplitude)
-    return np.array(
-        np.sin(np.linspace(phase * np.pi, (phase + 2 * frequency) * np.pi, size, endpoint=False))
-        * minmax[1],
-        dtype=dtype,
+    return _prepare(
+        np.sin(np.linspace(phase * np.pi, (phase + 2 * frequency) * np.pi, size, endpoint=False)),
+        amplitude,
+        dtype,
     )
 
 
@@ -100,13 +128,13 @@ def square(  # noqa: PLR0913
 ) -> np.ndarray:
     if size < 2:
         raise ValueError("Array size must be greater than or equal to 2")
-    minmax = _minmax(dtype, amplitude)
     full_cycle = size / frequency
     duty_cycle = min(max(round(full_cycle * duty_cycle), 1), full_cycle - 1)
     phase *= full_cycle
-    return np.array(
-        [minmax[1] if (i + phase) % full_cycle < duty_cycle else minmax[0] for i in range(size)],
-        dtype=dtype,
+    return _prepare(
+        [1.0 if (i + phase) % full_cycle < duty_cycle else -1.0 for i in range(size)],
+        amplitude,
+        dtype,
     )
 
 
@@ -117,16 +145,12 @@ def triangle(
     size: int = _DEFAULT_SIZE,
     dtype: np._DType = _DEFAULT_DTYPE,
 ) -> np.ndarray:
-    minmax = _minmax(dtype, amplitude)
     phase *= size / frequency
-    data = [
-        abs(((i + phase) / size * frequency * 2 - 0.5) % 2 - 1) * (minmax[1] - minmax[0])
-        + minmax[0]
-        for i in range(size)
-    ]
-    if dtype is not np.float:
-        data = [int(i) for i in data]
-    return np.array(data, dtype=dtype)
+    return _prepare(
+        [abs(((i + phase) / size * frequency * 2 - 0.5) % 2 - 1) * 2 - 1 for i in range(size)],
+        amplitude,
+        dtype,
+    )
 
 
 def saw(  # noqa: PLR0913
@@ -137,25 +161,24 @@ def saw(  # noqa: PLR0913
     size: int = _DEFAULT_SIZE,
     dtype: np._DType = _DEFAULT_DTYPE,
 ) -> np.ndarray:
-    minmax = _minmax(dtype, amplitude)
     phase *= size / frequency
-    data = [
-        ((((i + phase) / size * frequency) % 1) * (1 if reverse else -1) + (0 if reverse else 1))
-        * (minmax[1] - minmax[0])
-        + minmax[0]
-        for i in range(size)
-    ]
-    if dtype is not np.float:
-        data = [int(i) for i in data]
-    return np.array(data, dtype=dtype)
+    return _prepare(
+        [
+            ((((i + phase) / size * frequency) % 1) * 2 - 1) * (1 if reverse else -1)
+            for i in range(size)
+        ],
+        amplitude,
+        dtype,
+    )
 
 
 def noise(
     amplitude: float = 1.0, size: int = _DEFAULT_SIZE, dtype: np._DType = _DEFAULT_DTYPE
 ) -> np.ndarray:
-    minmax = _minmax(dtype, amplitude)
-    return np.array(
-        [random.random() * (minmax[1] - minmax[0]) + minmax[0] for i in range(size)], dtype=dtype
+    return _prepare(
+        [random.random() * 2 - 1 for i in range(size)],
+        amplitude,
+        dtype,
     )
 
 
@@ -181,7 +204,7 @@ def mix(*waveforms: np.ndarray | tuple[np.ndarray, float]):
         data += ((waveform if type(waveform) is np.ndarray else waveform[0])[:size] - mid) * (
             1.0 if type(waveform) is np.ndarray else min(max(waveform[1], 0.0), 1.0)
         )
-    return data
+    return _prepare(data)
 
 
 def from_wav(path: str, max_size: int = None, channel: int = 0) -> tuple[np.ndarray, int]:
