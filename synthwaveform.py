@@ -78,13 +78,13 @@ def _minmax(dtype: np._DType, amplitude: float = 1.0) -> tuple[int, int]:
 def sine(
     amplitude: float = 1.0,
     phase: float = 0.0,
-    scale: float = 1.0,
+    frequency: float = 1.0,
     size: int = _DEFAULT_SIZE,
     dtype: np._DType = _DEFAULT_DTYPE,
 ) -> np.ndarray:
     minmax = _minmax(dtype, amplitude)
     return np.array(
-        np.sin(np.linspace(phase * np.pi, (phase + 2 * scale) * np.pi, size, endpoint=False))
+        np.sin(np.linspace(phase * np.pi, (phase + 2 * frequency) * np.pi, size, endpoint=False))
         * minmax[1],
         dtype=dtype,
     )
