@@ -75,8 +75,8 @@ def update():
     # Draw waveform on screen
     display.fill(0)
     for i in range(data.size):
-        y1 = int((HEIGHT - data[i] * HEIGHT) / 2)
-        y2 = int((HEIGHT - data[(i + 1) % WIDTH] * HEIGHT) / 2)
+        y1 = min(int((HEIGHT - data[i] * HEIGHT) / 2), HEIGHT - 1)
+        y2 = min(int((HEIGHT - data[(i + 1) % WIDTH] * HEIGHT) / 2), HEIGHT - 1)
         if y1 == y2:
             display.pixel(i, y1, 1)
         else:
