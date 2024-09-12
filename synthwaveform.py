@@ -44,6 +44,7 @@ import ulab.numpy as np
 from micropython import const
 
 _DEFAULT_SIZE = const(256)
+_DEFAULT_DTYPE = np.int16
 
 # Tools
 
@@ -88,7 +89,7 @@ def sine(
     phase: float = 0.0,
     scale: float = 1.0,
     size: int = _DEFAULT_SIZE,
-    dtype: np._DType = np.int16,
+    dtype: np._DType = _DEFAULT_DTYPE,
 ) -> np.ndarray:
     minmax = _minmax(dtype, amplitude)
     return np.array(
@@ -103,7 +104,7 @@ def square(
     phase: float = 0.0,
     duty_cycle: float = 0.5,
     size: int = _DEFAULT_SIZE,
-    dtype: np._DType = np.int16,
+    dtype: np._DType = _DEFAULT_DTYPE,
 ) -> np.ndarray:
     if size < 2:
         raise ValueError("Array size must be greater than or equal to 2")
@@ -125,7 +126,7 @@ def triangle(
     phase: float = 0.0,
     shape: float = 0.5,
     size: int = _DEFAULT_SIZE,
-    dtype: np._DType = np.int16,
+    dtype: np._DType = _DEFAULT_DTYPE,
 ) -> np.ndarray:
     # NOTE: Numpy requires linspace arrays to at least have 2 elements
     if size < 4:
@@ -148,14 +149,14 @@ def saw(
     phase: float = 0.0,
     reverse: bool = False,
     size: int = _DEFAULT_SIZE,
-    dtype: np._DType = np.int16,
+    dtype: np._DType = _DEFAULT_DTYPE,
 ) -> np.ndarray:
     minmax = _minmax(dtype, amplitude)
     return _phase(np.linspace(minmax[not reverse], minmax[reverse], num=size, dtype=dtype), phase)
 
 
 def noise(
-    amplitude: float = 1.0, size: int = _DEFAULT_SIZE, dtype: np._DType = np.int16
+    amplitude: float = 1.0, size: int = _DEFAULT_SIZE, dtype: np._DType = _DEFAULT_DTYPE
 ) -> np.ndarray:
     minmax = _minmax(dtype, amplitude)
     return np.array(
