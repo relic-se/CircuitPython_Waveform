@@ -75,13 +75,6 @@ def _minmax(dtype: np._DType, amplitude: float = 1.0) -> tuple[int, int]:
     return minmax
 
 
-def _phase(data: np.ndarray, amount: float = 0.0):
-    # NOTE: If roll distance is 0, function returns an array of all 0s
-    if (roll := round(data.size * -amount)) != 0:
-        data = np.roll(data, roll)
-    return data
-
-
 def sine(
     amplitude: float = 1.0,
     phase: float = 0.0,
@@ -97,9 +90,10 @@ def sine(
     )
 
 
-def square(
+def square(  # noqa: PLR0913
     amplitude: float = 1.0,
     phase: float = 0.0,
+    frequency: float = 1.0,
     duty_cycle: float = 0.5,
     size: int = _DEFAULT_SIZE,
     dtype: np._DType = _DEFAULT_DTYPE,
@@ -107,15 +101,12 @@ def square(
     if size < 2:
         raise ValueError("Array size must be greater than or equal to 2")
     minmax = _minmax(dtype, amplitude)
-    duty_cycle = min(max(round(size * duty_cycle), 1), size - 1)
-    return _phase(
-        np.concatenate(
-            (
-                np.ones(duty_cycle, dtype=dtype) * minmax[1],
-                np.ones(size - duty_cycle, dtype=dtype) * minmax[0],
-            )
-        ),
-        phase,
+    full_cycle = size / frequency
+    duty_cycle = min(max(round(full_cycle * duty_cycle), 1), full_cycle - 1)
+    phase *= full_cycle
+    return np.array(
+        [minmax[1] if (i + phase) % full_cycle < duty_cycle else minmax[0] for i in range(size)],
+        dtype=dtype,
     )
 
 
