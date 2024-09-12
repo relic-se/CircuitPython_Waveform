@@ -161,13 +161,29 @@ def noise(
     )
 
 
-def blend(a: np.ndarray, b: np.ndarray, weight: float = 0.5):
-    if a.dtype is not b.dtype:
-        raise ValueError("Arrays must share the same data type")
-    size = min(a.size, b.size)
-    mid = np.sum(_minmax(a.dtype)) / 2
-    weight = min(max(weight, 0.0), 1.0)
-    return (a[:size] - mid) * (1.0 - weight) + (b[:size] - mid) * weight + mid
+def mix(*waveforms: np.ndarray | tuple[np.ndarray, float]):
+    # Check that all data types are the same
+    if len(waveforms) > 1:
+        for i in range(len(waveforms) - 1):
+            if (
+                waveforms[i] if type(waveforms[i]) is np.ndarray else waveforms[i][0]
+            ).dtype is not (
+                waveforms[i + 1] if type(waveforms[i + 1]) is np.ndarray else waveforms[i + 1][0]
+            ).dtype:
+                raise ValueError("Arrays must share the same data type")
+
+    dtype = (waveforms[0] if type(waveforms[0]) is np.ndarray else waveforms[0][0]).dtype
+    size = np.min(
+        [(waveform if type(waveform) is np.ndarray else waveform[0]).size for waveform in waveforms]
+    )
+    mid = np.sum(_minmax(dtype)) / 2
+
+    data = np.empty(size, dtype=dtype) + mid
+    for waveform in waveforms:
+        data += ((waveform if type(waveform) is np.ndarray else waveform[0])[:size] - mid) * (
+            1.0 if type(waveform) is np.ndarray else min(max(waveform[1], 0.0), 1.0)
+        )
+    return data
 
 
 def from_wav(path: str, max_size: int = None, channel: int = 0) -> tuple[np.ndarray, int]:
