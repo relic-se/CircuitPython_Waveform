@@ -105,8 +105,10 @@ def square(
     size: int = _DEFAULT_SIZE,
     dtype: np._DType = np.int16,
 ) -> np.ndarray:
+    if size < 2:
+        raise ValueError("Array size must be greater than or equal to 2")
     minmax = _minmax(dtype, amplitude)
-    duty_cycle = round(size * min(max(duty_cycle, 0.0), 1.0))
+    duty_cycle = min(max(round(size * duty_cycle), 1), size - 1)
     return _phase(
         np.concatenate(
             (
