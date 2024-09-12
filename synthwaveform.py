@@ -46,8 +46,6 @@ from micropython import const
 _DEFAULT_SIZE = const(256)
 _DEFAULT_DTYPE = np.int16
 
-# Tools
-
 
 def _minmax(dtype: np._DType, amplitude: float = 1.0) -> tuple[int, int]:
     # Determine range by data type
@@ -124,35 +122,41 @@ def square(
 def triangle(
     amplitude: float = 1.0,
     phase: float = 0.0,
-    shape: float = 0.5,
+    frequency: float = 1.0,
     size: int = _DEFAULT_SIZE,
     dtype: np._DType = _DEFAULT_DTYPE,
 ) -> np.ndarray:
-    # NOTE: Numpy requires linspace arrays to at least have 2 elements
-    if size < 4:
-        raise ValueError("Array size must be greater than or equal to 4")
     minmax = _minmax(dtype, amplitude)
-    shape = min(max(round(size * min(max(shape, 0.0), 1.0)), 2), size - 2)
-    return _phase(
-        np.concatenate(
-            (
-                np.linspace(minmax[0], minmax[1], num=shape, dtype=dtype),
-                np.linspace(minmax[1], minmax[0], num=size - shape, dtype=dtype),
-            )
-        ),
-        phase + 0.25,
-    )
+    phase *= size / frequency
+    data = [
+        abs(((i + phase) / size * frequency * 2 - 0.5) % 2 - 1) * (minmax[1] - minmax[0])
+        + minmax[0]
+        for i in range(size)
+    ]
+    if dtype is not np.float:
+        data = [int(i) for i in data]
+    return np.array(data, dtype=dtype)
 
 
-def saw(
+def saw(  # noqa: PLR0913
     amplitude: float = 1.0,
     phase: float = 0.0,
+    frequency: float = 1.0,
     reverse: bool = False,
     size: int = _DEFAULT_SIZE,
     dtype: np._DType = _DEFAULT_DTYPE,
 ) -> np.ndarray:
     minmax = _minmax(dtype, amplitude)
-    return _phase(np.linspace(minmax[not reverse], minmax[reverse], num=size, dtype=dtype), phase)
+    phase *= size / frequency
+    data = [
+        ((((i + phase) / size * frequency) % 1) * (1 if reverse else -1) + (0 if reverse else 1))
+        * (minmax[1] - minmax[0])
+        + minmax[0]
+        for i in range(size)
+    ]
+    if dtype is not np.float:
+        data = [int(i) for i in data]
+    return np.array(data, dtype=dtype)
 
 
 def noise(
