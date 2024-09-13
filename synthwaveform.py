@@ -40,28 +40,40 @@ __repo__ = "https://github.com/dcooperdalrymple/CircuitPython_SynthWaveform.git"
 import random
 
 import adafruit_wave
-import ulab.numpy as np
 from micropython import const
+
+try:
+    import ulab.numpy as np
+    from ulab.numpy import float as npfloat
+
+    try:
+        from ulab.numpy import _DType as DType
+    except ImportError:
+        pass
+except ImportError:
+    import numpy as np
+    from numpy import dtype as DType
+    from numpy import float64 as npfloat
 
 _DEFAULT_SIZE = const(256)
 _DEFAULT_DTYPE = np.int16
 
 
-def _minmax(dtype: np._DType, amplitude: float = 1.0) -> tuple[int, int]:
+def _minmax(dtype: DType, amplitude: float = 1.0) -> tuple[int, int]:
     # Determine range by data type
-    if dtype is np.int8:
+    if dtype == np.int8:
         minmax = -128, 127
-    elif dtype is np.int16:
+    elif dtype == np.int16:
         minmax = -32768, 32767
-    elif dtype is np.uint8:
+    elif dtype == np.uint8:
         minmax = 0, 255
-    elif dtype is np.uint16:
+    elif dtype == np.uint16:
         minmax = 0, 65535
-    elif dtype is np.float:
+    elif dtype == npfloat:
         minmax = -1.0, 1.0
     else:
         # NOTE: np.bool not supported
-        raise ValueError("Invalid ulab.numpy._DType")
+        raise ValueError("Invalid DType")
 
     # Scale range
     amplitude = min(max(amplitude, 0.0), 1.0)
@@ -69,15 +81,13 @@ def _minmax(dtype: np._DType, amplitude: float = 1.0) -> tuple[int, int]:
         mid = np.sum(minmax) / 2
         range = (minmax[1] - minmax[0]) / 2 * amplitude
         minmax = mid - range, mid + range
-        if dtype is not np.float:
+        if dtype != npfloat:
             minmax = round(minmax[0]), round(minmax[1])
 
     return minmax
 
 
-def _prepare(
-    data: np.ndarray | list, amplitude: float = 1.0, dtype: np._DType = None
-) -> np.ndarray:
+def _prepare(data: np.ndarray | list, amplitude: float = 1.0, dtype: DType = None) -> np.ndarray:
     # Determine data type and minimum/maximum range
     if dtype is None:
         dtype = data.dtype if type(data) is np.ndarray else _DEFAULT_DTYPE
@@ -85,16 +95,16 @@ def _prepare(
 
     # Convert list of floats to ndarray
     if type(data) is list:
-        data = np.array(data, dtype=np.float)
+        data = np.array(data, dtype=npfloat)
 
     # Amplify and clip
-    if data.dtype is np.float:
+    if data.dtype == npfloat:
         data = np.array(
             [min(max(i, -1.0), 1.0) for i in data * amplitude],
-            dtype=np.float,
+            dtype=npfloat,
         )
 
-    if dtype is not np.float:
+    if dtype != npfloat:
         # Scale to desired range
         data = (data + 1) / 2 * (minmax[1] - minmax[0]) + minmax[0]
         # Convert to integers
@@ -109,7 +119,7 @@ def sine(
     phase: float = 0.0,
     frequency: float = 1.0,
     size: int = _DEFAULT_SIZE,
-    dtype: np._DType = _DEFAULT_DTYPE,
+    dtype: DType = _DEFAULT_DTYPE,
 ) -> np.ndarray:
     return _prepare(
         np.sin(np.linspace(phase * np.pi, (phase + 2 * frequency) * np.pi, size, endpoint=False)),
@@ -124,7 +134,7 @@ def square(  # noqa: PLR0913
     frequency: float = 1.0,
     duty_cycle: float = 0.5,
     size: int = _DEFAULT_SIZE,
-    dtype: np._DType = _DEFAULT_DTYPE,
+    dtype: DType = _DEFAULT_DTYPE,
 ) -> np.ndarray:
     if size < 2:
         raise ValueError("Array size must be greater than or equal to 2")
@@ -143,7 +153,7 @@ def triangle(
     phase: float = 0.0,
     frequency: float = 1.0,
     size: int = _DEFAULT_SIZE,
-    dtype: np._DType = _DEFAULT_DTYPE,
+    dtype: DType = _DEFAULT_DTYPE,
 ) -> np.ndarray:
     phase *= size / frequency
     return _prepare(
@@ -159,7 +169,7 @@ def saw(  # noqa: PLR0913
     frequency: float = 1.0,
     reverse: bool = False,
     size: int = _DEFAULT_SIZE,
-    dtype: np._DType = _DEFAULT_DTYPE,
+    dtype: DType = _DEFAULT_DTYPE,
 ) -> np.ndarray:
     phase *= size / frequency
     return _prepare(
@@ -173,7 +183,7 @@ def saw(  # noqa: PLR0913
 
 
 def noise(
-    amplitude: float = 1.0, size: int = _DEFAULT_SIZE, dtype: np._DType = _DEFAULT_DTYPE
+    amplitude: float = 1.0, size: int = _DEFAULT_SIZE, dtype: DType = _DEFAULT_DTYPE
 ) -> np.ndarray:
     return _prepare(
         [random.random() * 2 - 1 for i in range(size)],
@@ -182,13 +192,11 @@ def noise(
     )
 
 
-def mix(*waveforms: np.ndarray | tuple[np.ndarray, float]):
+def mix(*waveforms: tuple) -> np.ndarray:
     # Check that all data types are the same
     if len(waveforms) > 1:
         for i in range(len(waveforms) - 1):
-            if (
-                waveforms[i] if type(waveforms[i]) is np.ndarray else waveforms[i][0]
-            ).dtype is not (
+            if (waveforms[i] if type(waveforms[i]) is np.ndarray else waveforms[i][0]).dtype != (
                 waveforms[i + 1] if type(waveforms[i + 1]) is np.ndarray else waveforms[i + 1][0]
             ).dtype:
                 raise ValueError("Arrays must share the same data type")
@@ -201,13 +209,13 @@ def mix(*waveforms: np.ndarray | tuple[np.ndarray, float]):
     minmax = _minmax(dtype)
 
     # Convert to float and mix
-    data = np.empty(size, dtype=np.float)
+    data = np.empty(size, dtype=npfloat)
     for waveform in waveforms:
         data += (
             (
                 np.array(
                     (waveform if type(waveform) is np.ndarray else waveform[0])[:size],
-                    dtype=np.float,
+                    dtype=npfloat,
                 )
                 - minmax[0]
             )
