@@ -193,18 +193,31 @@ def mix(*waveforms: np.ndarray | tuple[np.ndarray, float]):
             ).dtype:
                 raise ValueError("Arrays must share the same data type")
 
+    # Get properties of ndarray
     dtype = (waveforms[0] if type(waveforms[0]) is np.ndarray else waveforms[0][0]).dtype
     size = np.min(
         [(waveform if type(waveform) is np.ndarray else waveform[0]).size for waveform in waveforms]
     )
-    mid = np.sum(_minmax(dtype)) / 2
+    minmax = _minmax(dtype)
 
-    data = np.empty(size, dtype=dtype) + mid
+    # Convert to float and mix
+    data = np.empty(size, dtype=np.float)
     for waveform in waveforms:
-        data += ((waveform if type(waveform) is np.ndarray else waveform[0])[:size] - mid) * (
-            1.0 if type(waveform) is np.ndarray else min(max(waveform[1], 0.0), 1.0)
-        )
-    return _prepare(data)
+        data += (
+            (
+                np.array(
+                    (waveform if type(waveform) is np.ndarray else waveform[0])[:size],
+                    dtype=np.float,
+                )
+                - minmax[0]
+            )
+            / (minmax[1] - minmax[0])
+            * 2
+            - 1
+        ) * (1.0 if type(waveform) is np.ndarray else waveform[1])
+
+    # Clip and convert to original data type
+    return _prepare(data, dtype=dtype)
 
 
 def from_wav(path: str, max_size: int = None, channel: int = 0) -> tuple[np.ndarray, int]:
