@@ -1,7 +1,8 @@
 Simple test
 -----------
 
-Ensure your device works with this simple test.
+Test each waveform type provided by this library. Provide a 16-bit WAV file in the root directory
+called "test.wav" to test the :func:`synthwaveform.from_wav` function.
 
 .. literalinclude:: ../examples/synthwaveform_simpletest.py
     :caption: examples/synthwaveform_simpletest.py
