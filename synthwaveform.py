@@ -402,7 +402,7 @@ def mix(*waveforms: tuple) -> np.ndarray:
     minmax = _minmax(dtype)
 
     # Convert to float and mix
-    data = np.empty(size, dtype=npfloat)
+    data = np.zeros(size, dtype=npfloat)
     for waveform in waveforms:
         data += (
             (
@@ -415,7 +415,7 @@ def mix(*waveforms: tuple) -> np.ndarray:
             / (minmax[1] - minmax[0])
             * 2
             - 1
-        ) * (1.0 if type(waveform) is np.ndarray else waveform[1])
+        ) * (1.0 if type(waveform) is np.ndarray or type(waveform[1]) is not float else waveform[1])
 
     # Clip and convert to original data type
     return _prepare(data, dtype=dtype)
