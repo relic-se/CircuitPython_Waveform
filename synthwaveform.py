@@ -381,6 +381,24 @@ def mix(*waveforms: tuple) -> np.ndarray:
     objects must have the same data type. If the sizes of the arrays are inconsistent, the output
     will be sized to the shortest array.
 
+    .. |mix-1| image:: _static/mix-1.jpg
+        :width: 200
+        :alt: example of waveform mixing
+
+    .. table::
+
+        +--------------------------------------------------+---------+
+        | .. code-block:: python                           | |mix-1| |
+        |                                                  |         |
+        |     import synthwaveform                         |         |
+        |     waveform = synthwaveform.mix(                |         |
+        |         (synthwaveform.triangle(), 0.7),         |         |
+        |         (synthwaveform.saw(frequency=2.0), 0.1), |         |
+        |         (synthwaveform.saw(frequency=3.0), 0.1), |         |
+        |         (synthwaveform.saw(frequency=4.0), 0.1), |         |
+        |     )                                            |         |
+        +--------------------------------------------------+---------+
+
     :param waveforms: The arrays to be mixed together. In order to specify the level for each
         waveform, each waveform can be provided as a tuple with the first element being the waveform
         data and the second being the level.
