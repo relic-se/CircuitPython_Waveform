@@ -8,15 +8,15 @@
 # Required
 version: 2
 
+sphinx:
+  configuration: docs/conf.py
+
 build:
   os: ubuntu-lts-latest
   tools:
-    python: "3.12"
+    python: "3"
 
 python:
   install:
     - requirements: docs/requirements.txt
     - requirements: requirements.txt
-
-sphinx:
-  configuration: docs/conf.py
