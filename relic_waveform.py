@@ -387,17 +387,17 @@ def mix(*waveforms: tuple) -> np.ndarray:
 
     .. table::
 
-        +--------------------------------------------------+---------+
-        | .. code-block:: python                           | |mix-1| |
-        |                                                  |         |
+        +---------------------------------------------------+---------+
+        | .. code-block:: python                            | |mix-1| |
+        |                                                   |         |
         |     import relic_waveform                         |         |
         |     waveform = relic_waveform.mix(                |         |
         |         (relic_waveform.triangle(), 0.7),         |         |
         |         (relic_waveform.saw(frequency=2.0), 0.1), |         |
         |         (relic_waveform.saw(frequency=3.0), 0.1), |         |
         |         (relic_waveform.saw(frequency=4.0), 0.1), |         |
-        |     )                                            |         |
-        +--------------------------------------------------+---------+
+        |     )                                             |         |
+        +---------------------------------------------------+---------+
 
     :param waveforms: The arrays to be mixed together. In order to specify the level for each
         waveform, each waveform can be provided as a tuple with the first element being the waveform
