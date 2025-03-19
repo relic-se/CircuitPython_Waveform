@@ -7,9 +7,9 @@ import audiopwmio
 import board
 import synthio
 
-import synthwaveform
+import relic_waveform
 
 audio = audiopwmio.PWMAudioOut(board.A0)
 synth = synthio.Synthesizer()
 audio.play(synth)
-synth.press(synthio.Note(440, waveform=synthwaveform.sine()))
+synth.press(synthio.Note(440, waveform=relic_waveform.sine()))

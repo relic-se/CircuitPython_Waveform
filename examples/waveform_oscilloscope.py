@@ -12,7 +12,7 @@ import displayio
 import rotaryio
 import ulab.numpy as np
 
-import synthwaveform
+import relic_waveform
 
 displayio.release_displays()
 
@@ -32,7 +32,7 @@ values = [1.0, 0.0, 1.0, 0.5]  # amplitude, phase, frequency, duty cycle/reverse
 
 def update():
     if current_type == 0:
-        data = synthwaveform.sine(
+        data = relic_waveform.sine(
             amplitude=values[0],
             phase=values[1],
             frequency=values[2],
@@ -40,7 +40,7 @@ def update():
             dtype=np.float,
         )
     elif current_type == 1:
-        data = synthwaveform.triangle(
+        data = relic_waveform.triangle(
             amplitude=values[0],
             phase=values[1],
             frequency=values[2],
@@ -48,7 +48,7 @@ def update():
             dtype=np.float,
         )
     elif current_type == 2:
-        data = synthwaveform.saw(
+        data = relic_waveform.saw(
             amplitude=values[0],
             phase=values[1],
             frequency=values[2],
@@ -57,7 +57,7 @@ def update():
             dtype=np.float,
         )
     elif current_type == 3:
-        data = synthwaveform.square(
+        data = relic_waveform.square(
             amplitude=values[0],
             phase=values[1],
             frequency=values[2],
@@ -66,7 +66,7 @@ def update():
             dtype=np.float,
         )
     elif current_type == 4:
-        data = synthwaveform.noise(
+        data = relic_waveform.noise(
             amplitude=values[0],
             size=WIDTH,
             dtype=np.float,

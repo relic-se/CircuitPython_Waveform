@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-`synthwaveform`
+`relic_waveform`
 ================================================================================
 
 Helper library to generate waveforms.
@@ -23,7 +23,7 @@ Implementation Notes
 Shared Parameters
 -----------------
 
-Each waveform type (besides :func:`synthwaveform.noise`) has 5 shared function parameters:
+Each waveform type (besides :func:`relic_waveform.noise`) has 5 shared function parameters:
 amplitude, phase, frequency, size, and dtype (data type).
 
 Amplitude
@@ -132,7 +132,7 @@ See :mod:`ulab.numpy` for the available data type options (excluding :class:`ula
 # imports
 
 __version__ = "0.0.0+auto.0"
-__repo__ = "https://github.com/dcooperdalrymple/CircuitPython_SynthWaveform.git"
+__repo__ = "https://github.com/dcooperdalrymple/CircuitPython_Waveform.git"
 
 
 import random
@@ -390,12 +390,12 @@ def mix(*waveforms: tuple) -> np.ndarray:
         +--------------------------------------------------+---------+
         | .. code-block:: python                           | |mix-1| |
         |                                                  |         |
-        |     import synthwaveform                         |         |
-        |     waveform = synthwaveform.mix(                |         |
-        |         (synthwaveform.triangle(), 0.7),         |         |
-        |         (synthwaveform.saw(frequency=2.0), 0.1), |         |
-        |         (synthwaveform.saw(frequency=3.0), 0.1), |         |
-        |         (synthwaveform.saw(frequency=4.0), 0.1), |         |
+        |     import relic_waveform                         |         |
+        |     waveform = relic_waveform.mix(                |         |
+        |         (relic_waveform.triangle(), 0.7),         |         |
+        |         (relic_waveform.saw(frequency=2.0), 0.1), |         |
+        |         (relic_waveform.saw(frequency=3.0), 0.1), |         |
+        |         (relic_waveform.saw(frequency=4.0), 0.1), |         |
         |     )                                            |         |
         +--------------------------------------------------+---------+
 

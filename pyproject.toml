@@ -11,23 +11,24 @@ requires = [
 ]
 
 [project]
-name = "circuitpython-synthwaveform"
+name = "circuitpython-waveform"
 description = "Helper library to generate waveforms."
 version = "0.0.0+auto.0"
 readme = "README.rst"
 authors = [
     {name = "Cooper Dalrymple", email = "me@dcdalrymple.com"}
 ]
-urls = {Homepage = "https://github.com/dcooperdalrymple/CircuitPython_SynthWaveform"}
+urls = {Homepage = "https://github.com/dcooperdalrymple/CircuitPython_Waveform"}
 keywords = [
     "adafruit",
     "blinka",
     "circuitpython",
     "micropython",
-    "synthwaveform",
+    "waveform",
     "synthio,",
     "waveform,",
     "numpy",
+    "relic",
 ]
 license = {text = "MIT"}
 classifiers = [
@@ -41,7 +42,7 @@ classifiers = [
 dynamic = ["dependencies", "optional-dependencies"]
 
 [tool.setuptools]
-py-modules = ["synthwaveform"]
+py-modules = ["relic_waveform"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}

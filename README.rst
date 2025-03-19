@@ -2,8 +2,8 @@ Introduction
 ============
 
 
-.. image:: https://readthedocs.org/projects/circuitpython-synthwaveform/badge/?version=latest
-    :target: https://circuitpython-synthwaveform.readthedocs.io/
+.. image:: https://readthedocs.org/projects/circuitpython-waveform/badge/?version=latest
+    :target: https://circuitpython-waveform.readthedocs.io/
     :alt: Documentation Status
 
 
@@ -13,8 +13,8 @@ Introduction
     :alt: Discord
 
 
-.. image:: https://github.com/dcooperdalrymple/CircuitPython_SynthWaveform/workflows/Build%20CI/badge.svg
-    :target: https://github.com/dcooperdalrymple/CircuitPython_SynthWaveform/actions
+.. image:: https://github.com/dcooperdalrymple/CircuitPython_Waveform/workflows/Build%20CI/badge.svg
+    :target: https://github.com/dcooperdalrymple/CircuitPython_Waveform/actions
     :alt: Build Status
 
 
@@ -43,18 +43,18 @@ Installing from PyPI
    as a standard element. Stay tuned for PyPI availability!
 
 On supported GNU/Linux systems like the Raspberry Pi, you can install the driver locally `from
-PyPI <https://pypi.org/project/circuitpython-synthwaveform/>`_.
+PyPI <https://pypi.org/project/circuitpython-waveform/>`_.
 To install for current user:
 
 .. code-block:: shell
 
-    pip3 install circuitpython-synthwaveform
+    pip3 install circuitpython-waveform
 
 To install system-wide (this may be required in some cases):
 
 .. code-block:: shell
 
-    sudo pip3 install circuitpython-synthwaveform
+    sudo pip3 install circuitpython-waveform
 
 To install in a virtual environment in your current project:
 
@@ -63,7 +63,7 @@ To install in a virtual environment in your current project:
     mkdir project-name && cd project-name
     python3 -m venv .venv
     source .env/bin/activate
-    pip3 install circuitpython-synthwaveform
+    pip3 install circuitpython-waveform
 
 Installing to a Connected CircuitPython Device with Circup
 ==========================================================
@@ -80,7 +80,7 @@ following command to install:
 
 .. code-block:: shell
 
-    circup install synthwaveform
+    circup install relic_waveform
 
 Or the following command to update an existing version:
 
@@ -93,12 +93,12 @@ Usage Example
 
 .. code-block:: python
 
-    import synthwaveform
-    print(synthwaveform.sine())
+    import relic_waveform
+    print(relic_waveform.sine())
 
 Documentation
 =============
-API documentation for this library can be found on `Read the Docs <https://circuitpython-synthwaveform.readthedocs.io/>`_.
+API documentation for this library can be found on `Read the Docs <https://circuitpython-waveform.readthedocs.io/>`_.
 
 For information on building library documentation, please check out
 `this guide <https://learn.adafruit.com/creating-and-sharing-a-circuitpython-library/sharing-our-docs-on-readthedocs#sphinx-5-1>`_.
@@ -107,5 +107,5 @@ Contributing
 ============
 
 Contributions are welcome! Please read our `Code of Conduct
-<https://github.com/dcooperdalrymple/CircuitPython_SynthWaveform/blob/HEAD/CODE_OF_CONDUCT.md>`_
+<https://github.com/dcooperdalrymple/CircuitPython_Waveform/blob/HEAD/CODE_OF_CONDUCT.md>`_
 before contributing to help this project stay welcoming.

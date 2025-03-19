@@ -47,7 +47,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "CircuitPython SynthWaveform Library"
+project = "CircuitPython Waveform Library"
 creation_year = "2024"
 current_year = str(datetime.datetime.now().year)
 year_duration = (
@@ -146,8 +146,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "CircuitPython_SynthWaveform_Library.tex",
-        "CircuitPython SynthWaveform Library Documentation",
+        "CircuitPython_Waveform_Library.tex",
+        "CircuitPython Waveform Library Documentation",
         author,
         "manual",
     ),
@@ -160,8 +160,8 @@ latex_documents = [
 man_pages = [
     (
         master_doc,
-        "CircuitPython_SynthWaveform_Library",
-        "CircuitPython SynthWaveform Library Documentation",
+        "CircuitPython_Waveform_Library",
+        "CircuitPython Waveform Library Documentation",
         [author],
         1,
     ),
@@ -175,10 +175,10 @@ man_pages = [
 texinfo_documents = [
     (
         master_doc,
-        "CircuitPython_SynthWaveform_Library",
-        "CircuitPython SynthWaveform Library Documentation",
+        "CircuitPython_Waveform_Library",
+        "CircuitPython Waveform Library Documentation",
         author,
-        "CircuitPython_SynthWaveform_Library",
+        "CircuitPython_Waveform_Library",
         "One line description of project.",
         "Miscellaneous",
     ),
