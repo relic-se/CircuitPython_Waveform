@@ -17,7 +17,8 @@ print(relic_waveform.square(size=SIZE, dtype=TYPE))
 print(relic_waveform.noise(size=SIZE, dtype=TYPE))
 print(
     relic_waveform.mix(
-        relic_waveform.sine(size=SIZE, dtype=TYPE), (relic_waveform.noise(size=SIZE, dtype=TYPE), 0.5)
+        relic_waveform.sine(size=SIZE, dtype=TYPE),
+        (relic_waveform.noise(size=SIZE, dtype=TYPE), 0.5),
     )
 )
 print(relic_waveform.from_wav("test.wav", SIZE))
